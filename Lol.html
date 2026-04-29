@@ -2,691 +2,346 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>XTREAME — Avengers Gaming Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>XTREAME — AVENGERS: LEGACY ARENA</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* ===== RESET & BASE ===== */
+/* ===== RESET & ADVANCED ANIMATIONS ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  background:#070709;
+  background:#050508;
   font-family:'Rajdhani',sans-serif;
   color:#fff;
   overflow-x:hidden;
   cursor:none;
 }
 
-/* ===== CUSTOM CURSOR ===== */
+/* ===== CUSTOM CURSOR (ENHANCED) ===== */
 #cursor{
-  position:fixed;width:16px;height:16px;
-  background:#ff2020;border-radius:50%;
+  position:fixed;width:12px;height:12px;
+  background:#ff3030;border-radius:50%;
   pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:transform 0.1s,background 0.2s,width 0.2s,height 0.2s;
+  transition:transform 0.08s,background 0.2s,width 0.2s,height 0.2s;
   mix-blend-mode:difference;
+  box-shadow:0 0 15px #ff3030;
 }
 #cursor-ring{
-  position:fixed;width:36px;height:36px;
-  border:1.5px solid rgba(255,32,32,0.5);
+  position:fixed;width:42px;height:42px;
+  border:2px solid rgba(255,48,48,0.7);
   border-radius:50%;pointer-events:none;z-index:9998;
   transform:translate(-50%,-50%);
-  transition:transform 0.18s ease,width 0.2s,height 0.2s,border-color 0.2s;
+  transition:transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1),width 0.2s,height 0.2s,border-color 0.2s;
+  backdrop-filter:blur(2px);
 }
-
-/* ===== GLOBAL BG ===== */
+/* ===== CINEMATIC GRID + PARTICLE OVERLAY ===== */
 .grid-bg{
   position:fixed;inset:0;z-index:0;
-  background:
-    linear-gradient(rgba(220,0,0,0.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(220,0,0,0.05) 1px,transparent 1px);
-  background-size:70px 70px;
-  animation:gridPulse 5s ease-in-out infinite;
+  background-image: 
+    linear-gradient(rgba(220,0,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220,0,0,0.08) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 12s linear infinite;
 }
-@keyframes gridPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes gridShift {
+  0% { background-position: 0 0; opacity: 0.4; }
+  50% { background-position: 30px 30px; opacity: 0.9; }
+  100% { background-position: 0 0; opacity: 0.4; }
+}
 .scanlines{
   position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+  background:repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 6px);
+  animation: scanMove 10s linear infinite;
 }
-.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;animation:orbDrift linear infinite;}
-.o1{width:500px;height:500px;background:rgba(200,0,0,0.15);top:-150px;left:-100px;animation-duration:16s;}
-.o2{width:350px;height:350px;background:rgba(0,100,255,0.12);bottom:-100px;right:-80px;animation-duration:20s;animation-direction:reverse;}
-.o3{width:250px;height:250px;background:rgba(0,200,80,0.1);top:35%;left:55%;animation-duration:13s;}
-@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-50px) scale(1.1)}66%{transform:translate(-25px,30px) scale(.93)}100%{transform:translate(0,0) scale(1)}}
+@keyframes scanMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 20px; }
+}
+/* enhanced orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation: orbFloat 18s infinite alternate ease-in-out;}
+.o1{width:600px;height:600px;background:radial-gradient(circle,#ff2020,#990000);top:-200px;left:-150px;opacity:0.2;}
+.o2{width:450px;height:450px;background:radial-gradient(circle,#0066ff,#002288);bottom:-150px;right:-120px;opacity:0.2;animation-duration:22s;}
+.o3{width:350px;height:350px;background:radial-gradient(circle,#00ff88,#006633);top:40%;left:60%;opacity:0.15;animation-duration:14s;}
+@keyframes orbFloat{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(70px,-80px) scale(1.2);}
+}
 
-/* ===== NAVBAR ===== */
+/* ===== DYNAMIC NAVBAR ===== */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:500;
-  height:68px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 40px;
-  background:rgba(7,7,9,0.85);
-  border-bottom:1px solid rgba(220,0,0,0.2);
-  backdrop-filter:blur(16px);
-  transition:all 0.3s;
+  height:72px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;
+  background:rgba(5,5,8,0.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,48,48,0.3);
+  transition:all 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
 }
-nav.scrolled{background:rgba(7,7,9,0.98);box-shadow:0 4px 30px rgba(0,0,0,0.8);}
+nav.scrolled{
+  background:rgba(0,0,0,0.95);
+  border-bottom-color:#ff2020;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
 .logo{
-  font-family:'Orbitron',monospace;font-size:24px;font-weight:900;
-  color:#ff2020;letter-spacing:5px;
-  text-shadow:0 0 30px rgba(255,32,32,0.7);
-  animation:logoPulse 3s ease-in-out infinite;
+  font-family:'Orbitron',monospace;font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,#ff2020,#ff6666);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  letter-spacing:4px;
+  text-shadow:0 0 20px rgba(255,32,32,0.5);
+  animation: logoGlow 2s ease-in-out infinite;
 }
-@keyframes logoPulse{0%,100%{text-shadow:0 0 20px rgba(255,32,32,0.5)}50%{text-shadow:0 0 50px rgba(255,32,32,1),0 0 80px rgba(255,80,0,0.3)}}
-.nav-links{display:flex;gap:8px;}
+@keyframes logoGlow {
+  0%,100%{ filter: drop-shadow(0 0 5px #ff2020);}
+  50%{ filter: drop-shadow(0 0 20px #ff2020);}
+}
+.nav-links{display:flex;gap:12px;}
 .nav-btn{
-  background:transparent;border:1px solid rgba(255,255,255,0.12);
-  color:#aaa;padding:8px 20px;border-radius:6px;
-  font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
-  letter-spacing:1.5px;cursor:pointer;transition:all .25s;
+  background:transparent;border:1px solid rgba(255,255,255,0.15);
+  color:#ccc;padding:8px 20px;border-radius:30px;
+  font-family:'Orbitron',monospace;font-size:12px;font-weight:700;
+  letter-spacing:1.5px;cursor:pointer;transition:all 0.3s;
   text-transform:uppercase;
+  position:relative;overflow:hidden;
 }
-.nav-btn:hover{background:rgba(220,0,0,0.2);border-color:#ff2020;color:#fff;}
-.nav-btn.active{background:rgba(220,0,0,0.3);border-color:#ff2020;color:#fff;}
+.nav-btn::before{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent, rgba(255,32,32,0.4), transparent);
+  transition:left 0.5s;
+}
+.nav-btn:hover::before{left:100%;}
+.nav-btn:hover{background:#ff2020;color:#000;border-color:#ff2020;box-shadow:0 0 12px #ff2020;}
+.nav-btn.active{background:#ff2020;color:#000;border-color:#ff2020;box-shadow:0 0 12px #ff2020;}
 
-/* ===== SECTION BASE ===== */
+/* ===== SECTION ENHANCEMENTS ===== */
 section{
   position:relative;z-index:10;
   min-height:100vh;
   display:flex;flex-direction:column;justify-content:center;
-  padding:100px 60px 60px;
+  padding:120px 60px 80px;
 }
 
-/* ===== SECTION LABELS ===== */
+/* ===== SECTION LABELS & TITLES (GLITCH EFFECT) ===== */
 .section-tag{
-  font-family:'Orbitron',monospace;font-size:10px;letter-spacing:5px;
+  font-family:'Orbitron',monospace;font-size:10px;letter-spacing:6px;
   color:#ff2020;text-transform:uppercase;margin-bottom:12px;
-  opacity:0;transform:translateY(20px);transition:all .6s ease;
+  opacity:0;transform:translateY(20px);transition:all .8s cubic-bezier(0.2,0.9,0.4,1.1);
 }
 .section-tag.visible{opacity:1;transform:translateY(0);}
 .section-title{
-  font-family:'Orbitron',monospace;font-size:clamp(28px,4vw,52px);
-  font-weight:900;line-height:1.1;margin-bottom:16px;
-  opacity:0;transform:translateY(30px);transition:all .7s .1s ease;
+  font-family:'Orbitron',monospace;font-size:clamp(32px,5vw,62px);
+  font-weight:900;line-height:1.1;margin-bottom:24px;
+  opacity:0;transform:translateY(30px);transition:all .8s .1s ease;
+  position:relative;
 }
 .section-title.visible{opacity:1;transform:translateY(0);}
-.section-title span{color:#ff2020;}
+.section-title span{color:#ff2020;text-shadow:0 0 10px #ff2020;}
 
-/* ===== HERO SECTION ===== */
+/* ===== HERO SECTION WITH PARTICLE EFFECT ===== */
 #home{
   padding:0;min-height:100vh;
   display:flex;align-items:center;justify-content:center;
   text-align:center;overflow:hidden;
+  position:relative;
 }
 .hero-content{
   position:relative;z-index:20;
   display:flex;flex-direction:column;align-items:center;
-  gap:16px;
+  gap:20px;
 }
 .hero-eyebrow{
-  font-family:'Orbitron',monospace;font-size:11px;letter-spacing:6px;
+  font-family:'Orbitron',monospace;font-size:12px;letter-spacing:8px;
   color:#ff2020;text-transform:uppercase;
   animation:fadeUp .8s ease both;
 }
 .hero-title-main{
   font-family:'Orbitron',monospace;
-  font-size:clamp(48px,10vw,110px);
-  font-weight:900;line-height:.95;
-  letter-spacing:-2px;
+  font-size:clamp(48px,12vw,130px);
+  font-weight:900;line-height:.9;
+  letter-spacing:-3px;
   animation:fadeUp .9s .1s ease both;
 }
-.hero-title-main .red{color:#ff2020;}
-.hero-title-main .dim{color:rgba(255,255,255,0.2);}
+.hero-title-main .red{color:#ff2020;text-shadow:0 0 25px #ff2020;}
+.hero-title-main .dim{color:rgba(255,255,255,0.15);}
 .hero-sub-main{
-  font-size:16px;color:#666;letter-spacing:3px;
+  font-size:18px;color:#888;letter-spacing:4px;
   animation:fadeUp .9s .2s ease both;
 }
-.hero-cta{
-  display:flex;gap:16px;margin-top:16px;
-  animation:fadeUp .9s .35s ease both;
-}
+.hero-cta{display:flex;gap:24px;margin-top:24px;animation:fadeUp .9s .35s ease both;}
 .btn-primary{
-  padding:14px 36px;
-  background:linear-gradient(135deg,#cc0000,#ff3300);
-  border:none;border-radius:8px;
+  padding:16px 42px;
+  background:linear-gradient(135deg,#cc0000,#ff4400);
+  border:none;border-radius:50px;
   color:#fff;font-family:'Orbitron',monospace;
-  font-size:12px;font-weight:700;letter-spacing:2px;
-  cursor:pointer;transition:all .3s;
+  font-size:13px;font-weight:700;letter-spacing:2px;
+  cursor:pointer;transition:all 0.4s;
+  box-shadow:0 8px 20px rgba(220,0,0,0.4);
 }
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(220,0,0,.5);}
+.btn-primary:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 20px 35px rgba(220,0,0,0.6);}
 .btn-ghost{
-  padding:14px 36px;
-  background:transparent;
-  border:1px solid rgba(255,255,255,.2);
-  border-radius:8px;color:#fff;
-  font-family:'Orbitron',monospace;font-size:12px;
-  font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;
+  padding:16px 42px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(10px);
+  border:1.5px solid #ff2020;
+  border-radius:50px;color:#fff;
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;
 }
-.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.05);}
+.btn-ghost:hover{border-color:#fff;background:#ff2020;color:#000;transform:translateY(-3px);}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
 
-/* scroll indicator */
-.scroll-ind{
-  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  animation:fadeUp 1s .6s ease both;
+/* floating particles */
+#particle-canvas{
+  position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:5;
 }
-.scroll-ind span{font-size:10px;letter-spacing:3px;color:#444;}
-.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(220,0,0,.8),transparent);animation:scrollPulse 2s ease-in-out infinite;}
-@keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(.5);opacity:.4}}
 
-/* ===== CHARACTERS SECTION ===== */
+/* ===== CHARACTER CARDS (NEO 3D) ===== */
 #characters{
-  padding:120px 60px;
-  background:linear-gradient(180deg,transparent,rgba(0,0,0,.5),transparent);
+  background:radial-gradient(circle at 20% 30%, rgba(30,0,0,0.4), transparent);
 }
-.chars-intro{max-width:600px;margin-bottom:80px;}
-
+.chars-intro{max-width:650px;margin-bottom:80px;}
 .characters-showcase{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:60px 80px;
+  gap:70px 100px;
 }
-
-/* ===== CHARACTER CARD ===== */
 .char-showcase{
   display:flex;flex-direction:column;align-items:center;gap:24px;
-  opacity:0;transform:translateY(60px);
-  transition:all .8s ease;
+  opacity:0;transform:translateY(70px) scale(0.96);
+  transition:all 0.9s cubic-bezier(0.2, 0.9, 0.4, 1.2);
 }
-.char-showcase.visible{opacity:1;transform:translateY(0);}
-.char-showcase:nth-child(2){transition-delay:.15s;}
-.char-showcase:nth-child(3){transition-delay:.3s;}
-.char-showcase:nth-child(4){transition-delay:.45s;}
-
+.char-showcase.visible{opacity:1;transform:translateY(0) scale(1);}
 .char-model-wrap{
-  width:260px;height:340px;
-  perspective:800px;
+  width:280px;height:360px;
+  perspective:1000px;
   position:relative;
   cursor:pointer;
+  transition:all 0.3s;
 }
-.char-model-wrap:hover .char-3d{transform:rotateY(20deg) rotateX(-5deg) scale(1.05);}
 .char-3d{
   width:100%;height:100%;
   transform-style:preserve-3d;
-  transition:transform .5s ease;
+  transition:transform 0.4s cubic-bezier(0.1, 0.7, 0.3, 1.1);
   position:relative;
 }
-
-/* ===== SPIDER-MAN 3D MODEL ===== */
-.spiderman-model{
-  position:relative;width:260px;height:340px;
-  transform-style:preserve-3d;
+/* enhanced glassmorphism info */
+.char-info{
+  text-align:center;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(12px);
+  padding:16px 20px;
+  border-radius:24px;
+  width:100%;
+  border:1px solid rgba(255,48,48,0.2);
+  transition:all 0.3s;
 }
-/* body */
-.sm-body{
-  position:absolute;left:50%;top:90px;
-  width:100px;height:130px;
-  margin-left:-50px;
-  background:linear-gradient(135deg,#cc0000 0%,#ff1a1a 40%,#8b0000 100%);
-  border-radius:50% 50% 40% 40%;
-  box-shadow:4px 4px 0 #8b0000,-2px 2px 0 #ff4444,inset -10px -10px 20px rgba(0,0,0,.4);
-  transform:translateZ(8px);
-}
-/* spider symbol on chest */
-.sm-body::after{
-  content:'';position:absolute;top:30px;left:50%;
-  transform:translateX(-50%);
-  width:50px;height:30px;
-  background:rgba(0,0,0,.7);
-  clip-path:polygon(50% 0%,60% 40%,100% 40%,70% 65%,80% 100%,50% 75%,20% 100%,30% 65%,0% 40%,40% 40%);
-}
-/* head */
-.sm-head{
-  position:absolute;left:50%;top:20px;
-  width:80px;height:80px;
-  margin-left:-40px;
-  background:linear-gradient(135deg,#cc0000,#ff2020,#990000);
-  border-radius:50% 50% 45% 45%;
-  box-shadow:3px 3px 0 #8b0000,inset -8px -8px 15px rgba(0,0,0,.4);
-  transform:translateZ(12px);
-  overflow:hidden;
-}
-/* web lines on head */
-.sm-head::before{
-  content:'';position:absolute;inset:0;
-  background:
-    repeating-linear-gradient(0deg,transparent,transparent 10px,rgba(0,0,0,.15) 10px,rgba(0,0,0,.15) 11px),
-    repeating-linear-gradient(90deg,transparent,transparent 10px,rgba(0,0,0,.15) 10px,rgba(0,0,0,.15) 11px);
-  border-radius:50%;
-}
-/* eyes */
-.sm-eye{
-  position:absolute;top:28px;
-  width:28px;height:20px;
-  background:#fff;
-  border-radius:50% 50% 40% 40%;
-  clip-path:polygon(10% 50%,50% 0%,90% 50%,50% 100%);
-  box-shadow:0 0 10px #fff;
-}
-.sm-eye-l{left:10px;}
-.sm-eye-r{right:10px;}
-/* arms */
-.sm-arm{
-  position:absolute;top:100px;
-  width:32px;height:110px;
-  background:linear-gradient(135deg,#cc0000,#ff2020,#8b0000);
-  border-radius:16px;
-  box-shadow:2px 2px 0 #8b0000;
-  transform-origin:top center;
-}
-.sm-arm-l{left:45px;transform:rotate(-20deg) translateZ(6px);}
-.sm-arm-r{right:45px;transform:rotate(20deg) translateZ(6px);}
-/* legs */
-.sm-leg{
-  position:absolute;top:210px;
-  width:38px;height:120px;
-  background:linear-gradient(135deg,#1a1a1a,#333,#111);
-  border-radius:12px 12px 6px 6px;
-  box-shadow:2px 2px 0 #000;
-}
-.sm-leg-l{left:70px;transform:rotate(-8deg) translateZ(5px);}
-.sm-leg-r{right:70px;transform:rotate(8deg) translateZ(5px);}
-/* web shooter hand */
-.sm-web{
-  position:absolute;top:195px;left:10px;
-  width:20px;height:20px;
-  background:rgba(220,220,220,.9);
-  border-radius:50%;
-  box-shadow:0 0 15px rgba(255,255,255,.8),0 0 30px rgba(200,200,255,.4);
-  animation:webGlow 1.5s ease-in-out infinite;
-}
-@keyframes webGlow{0%,100%{box-shadow:0 0 10px rgba(255,255,255,.6)}50%{box-shadow:0 0 25px rgba(255,255,255,1),0 0 40px rgba(200,200,255,.6)}}
-/* web strand */
-.sm-strand{
-  position:absolute;top:0;left:-60px;
-  width:80px;height:2px;
-  background:linear-gradient(to left,rgba(200,200,255,.8),transparent);
-  transform:rotate(-30deg);
-  transform-origin:right center;
-  animation:strandWave 2s ease-in-out infinite;
-}
-@keyframes strandWave{0%,100%{opacity:.6;transform:rotate(-30deg)}50%{opacity:1;transform:rotate(-25deg)}}
-
-/* ===== HULK 3D MODEL ===== */
-.hulk-model{
-  position:relative;width:260px;height:340px;
-  transform-style:preserve-3d;
-}
-/* massive body */
-.hk-body{
-  position:absolute;left:50%;top:80px;
-  width:140px;height:150px;
-  margin-left:-70px;
-  background:linear-gradient(135deg,#005c20 0%,#00c850 35%,#007a2a 70%,#003d14 100%);
-  border-radius:30% 30% 35% 35%;
-  box-shadow:6px 6px 0 #003d14,-3px 3px 0 #00e060,inset -15px -15px 30px rgba(0,0,0,.5);
-  transform:translateZ(10px);
-}
-/* muscles on body */
-.hk-body::before{
-  content:'';position:absolute;top:20px;left:20px;right:20px;height:60px;
-  background:repeating-linear-gradient(90deg,transparent,transparent 18px,rgba(0,0,0,.1) 18px,rgba(0,0,0,.1) 20px);
-  border-radius:10px;
-}
-/* pecs */
-.hk-pec{
-  position:absolute;
-  width:52px;height:42px;
-  background:linear-gradient(135deg,#00c850,#009940);
-  border-radius:40% 40% 30% 30%;
-  box-shadow:inset -4px -4px 8px rgba(0,0,0,.4),2px 2px 0 #003d14;
-  top:24px;
-}
-.hk-pec-l{left:10px;}
-.hk-pec-r{right:10px;}
-/* head — big & angry */
-.hk-head{
-  position:absolute;left:50%;top:10px;
-  width:100px;height:90px;
-  margin-left:-50px;
-  background:linear-gradient(135deg,#005c20,#00c850 40%,#007a2a);
-  border-radius:45% 45% 40% 40%;
-  box-shadow:4px 4px 0 #003d14,inset -10px -10px 20px rgba(0,0,0,.4);
-  transform:translateZ(14px);
-}
-/* brow ridge */
-.hk-head::before{
-  content:'';position:absolute;top:22px;left:10px;right:10px;height:12px;
-  background:linear-gradient(to bottom,#003d14,#005c20);
-  border-radius:6px 6px 0 0;
-}
-/* eyes */
-.hk-eye{
-  position:absolute;top:32px;
-  width:22px;height:14px;
-  background:#fff;
-  border-radius:50%;
-}
-.hk-eye::after{
-  content:'';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:10px;height:10px;
-  background:#111;border-radius:50%;
-}
-.hk-eye-l{left:14px;}
-.hk-eye-r{right:14px;}
-/* rage lines */
-.hk-rage{
-  position:absolute;top:28px;left:8px;right:8px;height:3px;
-  background:rgba(0,0,0,.4);border-radius:2px;
-  transform:rotate(-5deg);
-}
-/* nose + mouth */
-.hk-mouth{
-  position:absolute;bottom:15px;left:50%;
-  transform:translateX(-50%);
-  width:30px;height:12px;
-  background:rgba(0,0,0,.5);
-  border-radius:0 0 50% 50%;
-}
-/* massive arms */
-.hk-arm{
-  position:absolute;top:85px;
-  width:54px;height:130px;
-  background:linear-gradient(135deg,#005c20,#00c850,#003d14);
-  border-radius:20px;
-  box-shadow:4px 4px 0 #003d14;
-  transform-origin:top center;
-}
-.hk-arm-l{left:18px;transform:rotate(-30deg) translateZ(8px);}
-.hk-arm-r{right:18px;transform:rotate(30deg) translateZ(8px);}
-/* fists */
-.hk-fist{
-  position:absolute;bottom:-10px;left:50%;
-  transform:translateX(-50%);
-  width:46px;height:44px;
-  background:linear-gradient(135deg,#004d1a,#009940);
-  border-radius:40%;
-  box-shadow:3px 3px 0 #003d14;
-}
-/* legs */
-.hk-leg{
-  position:absolute;top:220px;
-  width:56px;height:110px;
-  background:linear-gradient(135deg,#1a0a00,#3d2000,#1a0a00);
-  border-radius:14px 14px 8px 8px;
-  box-shadow:3px 3px 0 #000;
-}
-.hk-leg-l{left:55px;transform:rotate(-8deg) translateZ(6px);}
-.hk-leg-r{right:55px;transform:rotate(8deg) translateZ(6px);}
-
-/* character glow rings */
-.char-glow{
-  position:absolute;bottom:0;left:50%;
-  transform:translateX(-50%);
-  width:200px;height:40px;
-  border-radius:50%;
-  animation:glowPulse 2s ease-in-out infinite;
-}
-.spider-glow{background:radial-gradient(ellipse,rgba(220,0,0,.5),transparent 70%);}
-.hulk-glow{background:radial-gradient(ellipse,rgba(0,200,80,.4),transparent 70%);}
-.iron-glow{background:radial-gradient(ellipse,rgba(255,140,0,.4),transparent 70%);}
-.thor-glow{background:radial-gradient(ellipse,rgba(30,100,255,.4),transparent 70%);}
-@keyframes glowPulse{0%,100%{opacity:.6;transform:translateX(-50%) scaleX(1)}50%{opacity:1;transform:translateX(-50%) scaleX(1.2)}}
-
-/* char info */
-.char-info{text-align:center;}
-.char-name-big{
-  font-family:'Orbitron',monospace;font-size:18px;font-weight:900;
-  letter-spacing:3px;margin-bottom:6px;
-}
-.char-lore{font-size:14px;color:#666;line-height:1.5;margin-bottom:12px;}
+.char-name-big{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;letter-spacing:3px;margin-bottom:8px;}
+.char-lore{font-size:13px;color:#aaa;line-height:1.5;margin-bottom:12px;}
 .char-stats{display:flex;gap:12px;justify-content:center;}
 .stat-pill{
-  font-size:11px;font-weight:700;letter-spacing:1.5px;
-  padding:4px 12px;border-radius:20px;
+  font-size:10px;font-weight:800;letter-spacing:1.2px;
+  padding:5px 14px;border-radius:30px;
 }
-.spider-stat{background:rgba(220,0,0,.2);color:#ff5555;border:1px solid #cc0000;}
-.hulk-stat{background:rgba(0,200,80,.2);color:#00e060;border:1px solid #00c850;}
-.iron-stat{background:rgba(255,140,0,.2);color:#ffaa00;border:1px solid #ff8c00;}
-.thor-stat{background:rgba(30,100,255,.2);color:#5090ff;border:1px solid #1e64ff;}
+.spider-stat{background:rgba(220,0,0,.3);color:#ff7777;border:1px solid #ff2020;}
+.hulk-stat{background:rgba(0,200,80,.3);color:#88ff88;border:1px solid #00ff88;}
+.iron-stat{background:rgba(255,140,0,.3);color:#ffcc44;border:1px solid #ffaa33;}
+.thor-stat{background:rgba(30,100,255,.3);color:#88aaff;border:1px solid #4488ff;}
 
-/* ===== IRON MAN SVG MODEL ===== */
-.ironman-model{position:relative;width:260px;height:340px;}
-.ironman-svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(255,140,0,.5));}
-
-/* ===== THOR SVG MODEL ===== */
-.thor-model{position:relative;width:260px;height:340px;}
-.thor-svg{width:100%;height:100%;filter:drop-shadow(0 0 20px rgba(30,100,255,.5));}
-
-/* ===== LOGIN SECTION ===== */
+/* ===== LOGIN SECTION (HOLOGRAM EFFECT) ===== */
 #login{
-  background:linear-gradient(180deg,rgba(0,0,0,.3),rgba(0,0,0,.8));
-  justify-content:center;
-  align-items:center;
+  background:linear-gradient(135deg,#030308,#0a0a14);
 }
-.login-wrapper{
-  display:flex;gap:80px;align-items:center;
-  max-width:1100px;width:100%;
-}
-.login-left{flex:1;opacity:0;transform:translateX(-60px);transition:all .8s ease;}
-.login-left.visible{opacity:1;transform:translateX(0);}
-
-.big-quote{
-  font-family:'Orbitron',monospace;
-  font-size:clamp(24px,3.5vw,44px);
-  font-weight:900;line-height:1.15;
-  margin-bottom:20px;
-}
-.big-quote span{color:#ff2020;}
-
-.feature-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:24px;}
-.feature-list li{
-  display:flex;align-items:center;gap:12px;
-  font-size:15px;color:#888;
-}
-.feature-list li::before{
-  content:'';width:6px;height:6px;
-  background:#ff2020;border-radius:50%;flex-shrink:0;
-}
-
+.login-wrapper{display:flex;gap:80px;align-items:center;max-width:1200px;margin:0 auto;}
 .auth-box{
-  width:420px;flex-shrink:0;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:40px 36px;
-  backdrop-filter:blur(20px);
-  position:relative;overflow:hidden;
-  opacity:0;transform:translateX(60px);transition:all .8s .15s ease;
+  width:460px;
+  background:rgba(12,12,20,0.7);
+  backdrop-filter:blur(25px);
+  border:1px solid rgba(255,48,48,0.3);
+  border-radius:32px;
+  padding:44px 40px;
+  box-shadow:0 25px 45px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  transition:all 0.4s;
 }
 .auth-box.visible{opacity:1;transform:translateX(0);}
 .auth-box::before{
-  content:'';position:absolute;
-  top:-1px;left:15%;right:15%;height:2px;
+  content:'';position:absolute;top:-2px;left:10%;right:10%;height:2px;
   background:linear-gradient(90deg,transparent,#ff2020,transparent);
 }
-
-.auth-tabs{
-  display:flex;background:rgba(0,0,0,.5);
-  border-radius:10px;padding:4px;margin-bottom:28px;
-  border:1px solid rgba(255,255,255,.06);
-}
-.tab-btn{
-  flex:1;padding:10px;border:none;border-radius:7px;
-  background:transparent;color:#555;
-  font-family:'Orbitron',monospace;font-size:11px;
-  font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .3s;
-}
-.tab-btn.active{background:#cc0000;color:#fff;box-shadow:0 4px 16px rgba(220,0,0,.4);}
-
-.form-section{display:none;}
-.form-section.visible{display:block;}
-
-.auth-heading{
-  font-family:'Orbitron',monospace;font-size:20px;
-  font-weight:900;margin-bottom:6px;letter-spacing:2px;
-}
-.auth-sub{font-size:13px;color:#555;margin-bottom:24px;}
-
-.field{margin-bottom:18px;}
-.field label{
-  display:block;font-size:11px;color:#777;
-  letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;
-}
-.field input{
-  width:100%;background:rgba(0,0,0,.6);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;color:#fff;
-  font-family:'Rajdhani',sans-serif;font-size:15px;
-  padding:12px 14px;outline:none;transition:all .25s;
-}
-.field input:focus{border-color:#ff2020;box-shadow:0 0 0 3px rgba(220,0,0,.15);}
-.field input::placeholder{color:#333;}
-
-.field-row{display:flex;gap:12px;}
-.field-row .field{flex:1;}
-
-.forgot{text-align:right;margin:-8px 0 18px;}
-.forgot a{color:#ff2020;font-size:12px;text-decoration:none;letter-spacing:1px;}
-
-.submit-btn{
-  width:100%;padding:14px;
-  background:linear-gradient(135deg,#cc0000,#ff3300);
-  border:none;border-radius:10px;color:#fff;
-  font-family:'Orbitron',monospace;font-size:12px;
-  font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;
-}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(220,0,0,.5);}
-.submit-btn:active{transform:translateY(0);}
-
-.divider{
-  display:flex;align-items:center;gap:12px;
-  margin:20px 0;color:#333;font-size:12px;
-}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
-
-.social-btns{display:flex;gap:10px;}
-.social-btn{
-  flex:1;padding:10px;
-  border:1px solid rgba(255,255,255,.1);border-radius:8px;
-  background:rgba(0,0,0,.3);color:#888;
-  font-size:13px;font-family:'Rajdhani',sans-serif;
-  font-weight:700;cursor:pointer;transition:all .25s;text-align:center;
-}
-.social-btn:hover{border-color:rgba(255,255,255,.25);color:#fff;background:rgba(255,255,255,.05);}
-
-.agree-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
-.agree-check input{margin-top:3px;accent-color:#ff2020;}
-.agree-check span{font-size:12px;color:#444;line-height:1.4;}
-.agree-check a{color:#ff2020;text-decoration:none;}
-
-/* ===== ARENA/LEADERBOARD ===== */
-#arena{padding:120px 60px;}
-.leaderboard{
-  max-width:700px;margin-top:50px;
-  display:flex;flex-direction:column;gap:12px;
-}
+/* ===== ARENA LEADERBOARD (ANIMATED BARS) ===== */
+.leaderboard{max-width:760px;margin-top:60px;}
 .lb-row{
   display:flex;align-items:center;gap:20px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:12px;padding:16px 20px;
-  transition:all .3s;cursor:pointer;
-  opacity:0;transform:translateX(-40px);transition:all .6s ease;
+  background:rgba(20,20,30,0.5);
+  border-left:4px solid #ff2020;
+  border-radius:16px;padding:14px 20px;
+  transition:all 0.4s;
+  cursor:pointer;
+  opacity:0;transform:translateX(-50px);
 }
 .lb-row.visible{opacity:1;transform:translateX(0);}
-.lb-row:nth-child(2){transition-delay:.1s;}
-.lb-row:nth-child(3){transition-delay:.2s;}
-.lb-row:nth-child(4){transition-delay:.3s;}
-.lb-row:nth-child(5){transition-delay:.4s;}
-.lb-row:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);transform:translateX(6px);}
-.lb-rank{
-  font-family:'Orbitron',monospace;font-size:20px;font-weight:900;
-  width:40px;text-align:center;
-}
-.lb-rank.gold{color:#ffd700;}
-.lb-rank.silver{color:#c0c0c0;}
-.lb-rank.bronze{color:#cd7f32;}
-.lb-rank.other{color:#444;}
-.lb-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid rgba(255,255,255,.1);}
+.lb-row:hover{background:rgba(255,32,32,0.15);transform:translateX(10px);}
+.lb-rank{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;width:55px;}
+.lb-rank.gold{color:#ffd700;text-shadow:0 0 5px gold;}
+.lb-rank.silver{color:#e0e0e0;text-shadow:0 0 4px silver;}
+.lb-rank.bronze{color:#cd7f32;text-shadow:0 0 4px #cd7f32;}
+.lb-avatar{width:52px;height:52px;border-radius:60px;display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(0,0,0,0.5);border:1px solid #ff2020;}
 .lb-info{flex:1;}
-.lb-name{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;margin-bottom:2px;}
-.lb-hero{font-size:12px;color:#555;}
-.lb-score{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:#ff2020;}
-.lb-bar-wrap{width:120px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
-.lb-bar{height:100%;background:linear-gradient(90deg,#cc0000,#ff3300);border-radius:2px;animation:barGrow 1.5s ease both;}
-@keyframes barGrow{from{width:0}}
+.lb-name{font-family:'Orbitron',monospace;font-size:15px;font-weight:700;}
+.lb-score{font-family:'Orbitron',monospace;font-size:18px;font-weight:800;color:#ff2020;}
+.lb-bar-wrap{width:140px;height:8px;background:#222;border-radius:6px;overflow:hidden;}
+.lb-bar{height:100%;background:linear-gradient(90deg,#ff2020,#ff8844);border-radius:6px;width:0;transition:width 1.4s cubic-bezier(0.2,0.9,0.4,1.2);}
 
-/* ===== TICKER BAR ===== */
+/* ===== TICKER (INFINITE SCROLL) ===== */
 .ticker-bar{
-  position:relative;z-index:50;
-  background:rgba(0,0,0,.7);
-  border-top:1px solid rgba(220,0,0,.2);
-  border-bottom:1px solid rgba(220,0,0,.2);
-  padding:14px 0;overflow:hidden;
+  position:relative;z-index:60;
+  background:#000000cc;
+  border-top:1px solid #ff2020;
+  border-bottom:1px solid #ff2020;
+  padding:12px 0;
+  overflow:hidden;
 }
 .ticker-track{
-  display:flex;gap:60px;
-  animation:ticker 25s linear infinite;
+  display:flex;gap:50px;
+  animation:tickerX 22s linear infinite;
   white-space:nowrap;
 }
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ticker-item{font-size:13px;color:#555;letter-spacing:1px;flex-shrink:0;display:flex;align-items:center;gap:8px;}
-.ticker-item b{color:#ff2020;font-weight:700;}
-
-/* ===== FOOTER ===== */
-footer{
-  position:relative;z-index:50;
-  background:rgba(0,0,0,.9);
-  border-top:1px solid rgba(255,255,255,.06);
-  padding:40px 60px;
-  display:flex;align-items:center;justify-content:space-between;
+@keyframes tickerX{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
 }
-.foot-logo{
-  font-family:'Orbitron',monospace;font-size:20px;
-  font-weight:900;color:#ff2020;letter-spacing:4px;
-}
-.foot-links{display:flex;gap:24px;}
-.foot-links a{color:#444;font-size:13px;text-decoration:none;letter-spacing:1px;transition:color .2s;}
-.foot-links a:hover{color:#ff2020;}
-.foot-copy{font-size:12px;color:#333;letter-spacing:1px;}
+.ticker-item{font-size:14px;color:#ccc;letter-spacing:1px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.ticker-item b{color:#ff2020;font-weight:900;text-shadow:0 0 3px #ff2020;}
 
-/* ===== WEB CORNER SVG ===== */
-.web-corner{
-  position:fixed;top:68px;right:0;
-  width:160px;height:160px;opacity:.12;
-  pointer-events:none;z-index:5;
-}
+/* ===== SVG ENHANCEMENTS ===== */
+.ironman-svg, .thor-svg{filter:drop-shadow(0 10px 20px rgba(0,0,0,0.6)); transition:filter 0.3s;}
+.char-model-wrap:hover .ironman-svg{filter:drop-shadow(0 0 18px #ff5500);}
+.char-model-wrap:hover .thor-svg{filter:drop-shadow(0 0 18px #2288ff);}
 
-/* ===== UTILITY ===== */
-.text-red{color:#ff2020;}
-.mt-8{margin-top:8px;}
-.mt-16{margin-top:16px;}
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1000px){
+  .characters-showcase{grid-template-columns:1fr; gap:50px;}
+  .login-wrapper{flex-direction:column;}
+  .auth-box{width:100%;}
+  nav{padding:0 20px;}
+  section{padding:100px 30px;}
+}
 </style>
 </head>
 <body>
 
-<!-- Custom cursor -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
-
-<!-- BG effects -->
 <div class="grid-bg"></div>
 <div class="scanlines"></div>
 <div class="orb o1"></div>
 <div class="orb o2"></div>
 <div class="orb o3"></div>
+<canvas id="particle-canvas"></canvas>
 
-<!-- Spider web corner -->
-<svg class="web-corner" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="white" stroke-width="0.8">
-    <line x1="160" y1="0" x2="0" y2="160"/>
-    <line x1="160" y1="0" x2="60" y2="160"/>
-    <line x1="160" y1="0" x2="120" y2="160"/>
-    <line x1="160" y1="0" x2="160" y2="160"/>
-    <line x1="160" y1="0" x2="0" y2="60"/>
-    <line x1="160" y1="0" x2="0" y2="100"/>
-    <ellipse cx="160" cy="0" rx="35" ry="35"/>
-    <ellipse cx="160" cy="0" rx="70" ry="70"/>
-    <ellipse cx="160" cy="0" rx="105" ry="105"/>
-    <ellipse cx="160" cy="0" rx="140" ry="140"/>
-  </g>
-</svg>
-
-<!-- ===== NAVBAR ===== -->
 <nav id="navbar">
-  <div class="logo">XTREAME</div>
+  <div class="logo">◢ XTREAME ◣</div>
   <div class="nav-links">
     <button class="nav-btn active" onclick="scrollTo('#home')">HOME</button>
     <button class="nav-btn" onclick="scrollTo('#characters')">HEROES</button>
@@ -696,666 +351,165 @@ footer{
   </div>
 </nav>
 
-<!-- ===== SECTION 1: HERO ===== -->
+<!-- HERO -->
 <section id="home">
   <div class="hero-content">
-    <div class="hero-eyebrow">Avengers Universe Gaming Portal</div>
+    <div class="hero-eyebrow">AVENGERS: MULTIVERSE GAMING HUB</div>
     <h1 class="hero-title-main">
-      <span class="red">AVENGERS</span><br>
-      <span class="dim">ASSEMBLE.</span>
+      <span class="red">ASSEMBLE</span><br>
+      <span class="dim">YOUR LEGACY.</span>
     </h1>
-    <p class="hero-sub-main">Choose your hero. Enter the arena. Dominate the multiverse.</p>
+    <p class="hero-sub-main">Real-time battles · Legendary skins · Global supremacy</p>
     <div class="hero-cta">
-      <button class="btn-primary" onclick="scrollTo('#characters')">MEET THE HEROES</button>
-      <button class="btn-ghost" onclick="scrollTo('#login')">SIGN IN</button>
+      <button class="btn-primary" onclick="scrollTo('#characters')">CHOOSE HERO</button>
+      <button class="btn-ghost" onclick="scrollTo('#login')">JOIN NOW</button>
     </div>
   </div>
   <div class="scroll-ind">
-    <span>SCROLL</span>
+    <span>EXPLORE</span>
     <div class="scroll-line"></div>
   </div>
 </section>
 
-<!-- ===== TICKER ===== -->
 <div class="ticker-bar">
   <div class="ticker-track">
-    <div class="ticker-item">🕷️ <b>SPIDER-MAN</b> webbed 5 enemies — NYC</div>
-    <div class="ticker-item">💚 <b>HULK</b> SMASHED high score — 9,999,999 pts</div>
-    <div class="ticker-item">⚡ <b>THOR</b> won Thunder Tournament</div>
-    <div class="ticker-item">🔥 <b>IRON MAN</b> unlocked Mk.LXXXV</div>
-    <div class="ticker-item">🛡️ <b>CAPTAIN AMERICA</b> leads leaderboard</div>
-    <div class="ticker-item">🏹 <b>HAWKEYE</b> achieved 100% accuracy</div>
-    <div class="ticker-item">🕷️ <b>SPIDER-MAN</b> webbed 5 enemies — NYC</div>
-    <div class="ticker-item">💚 <b>HULK</b> SMASHED high score — 9,999,999 pts</div>
-    <div class="ticker-item">⚡ <b>THOR</b> won Thunder Tournament</div>
-    <div class="ticker-item">🔥 <b>IRON MAN</b> unlocked Mk.LXXXV</div>
-    <div class="ticker-item">🛡️ <b>CAPTAIN AMERICA</b> leads leaderboard</div>
-    <div class="ticker-item">🏹 <b>HAWKEYE</b> achieved 100% accuracy</div>
+    <div class="ticker-item">⚡ <b>THOR</b> Stormbreaker record: 1.2M damage</div>
+    <div class="ticker-item">🕷️ <b>SPIDER-MAN</b> 1v5 clutch victory</div>
+    <div class="ticker-item">💚 <b>HULK</b> Smashed arena boss in 12 sec</div>
+    <div class="ticker-item">🔥 <b>IRON MAN</b> Nano-tech suit unlocked</div>
+    <div class="ticker-item">🏆 New event: INFINITY WAR begins</div>
+    <div class="ticker-item">⚡ <b>THOR</b> Stormbreaker record: 1.2M damage</div>
+    <div class="ticker-item">🕷️ <b>SPIDER-MAN</b> 1v5 clutch victory</div>
+    <div class="ticker-item">💚 <b>HULK</b> Smashed arena boss in 12 sec</div>
   </div>
 </div>
 
-<!-- ===== SECTION 2: CHARACTERS ===== -->
+<!-- CHARACTERS SECTION (enhanced models) -->
 <section id="characters">
   <div class="chars-intro">
-    <div class="section-tag reveal">AVENGERS ROSTER</div>
-    <h2 class="section-title reveal">CHOOSE YOUR <span>HERO</span></h2>
-    <p style="color:#555;font-size:15px;line-height:1.6;" class="section-tag reveal">
-      Hover to see the 3D models. Click to select your fighter. Each hero has unique abilities in the arena.
-    </p>
+    <div class="section-tag reveal">ROSTER · 2026</div>
+    <h2 class="section-title reveal">LEGENDARY <span>WARRIORS</span></h2>
+    <p class="section-tag reveal">Hover any model — feel the power. Click to select your fighter.</p>
   </div>
-
   <div class="characters-showcase">
-
-    <!-- SPIDER-MAN -->
+    <!-- Spider-Man (enhanced) -->
     <div class="char-showcase reveal">
       <div class="char-model-wrap" onclick="selectHero('spider','Spider-Man')">
         <div class="char-3d" id="spider-3d">
           <div class="spiderman-model">
-            <div class="sm-strand"></div>
-            <div class="sm-web"></div>
-            <div class="sm-head">
-              <div class="sm-eye sm-eye-l"></div>
-              <div class="sm-eye sm-eye-r"></div>
-            </div>
+            <div class="sm-strand"></div><div class="sm-web"></div>
+            <div class="sm-head"><div class="sm-eye sm-eye-l"></div><div class="sm-eye sm-eye-r"></div></div>
             <div class="sm-body"></div>
-            <div class="sm-arm sm-arm-l"></div>
-            <div class="sm-arm sm-arm-r"></div>
-            <div class="sm-leg sm-leg-l"></div>
-            <div class="sm-leg sm-leg-r"></div>
+            <div class="sm-arm sm-arm-l"></div><div class="sm-arm sm-arm-r"></div>
+            <div class="sm-leg sm-leg-l"></div><div class="sm-leg sm-leg-r"></div>
             <div class="char-glow spider-glow"></div>
           </div>
         </div>
       </div>
-      <div class="char-info">
-        <div class="char-name-big" style="color:#ff2020;">SPIDER-MAN</div>
-        <p class="char-lore">Peter Parker — wall-crawler, web-slinger.<br>Friendly neighborhood hero with spider-sense.</p>
-        <div class="char-stats">
-          <span class="stat-pill spider-stat">AGILITY 98</span>
-          <span class="stat-pill spider-stat">SPEED 95</span>
-          <span class="stat-pill spider-stat">WEBS 100</span>
-        </div>
-      </div>
+      <div class="char-info"><div class="char-name-big" style="color:#ff2020;">SPIDER-MAN</div><p class="char-lore">Peter Parker — Spider-Sense, Web-Warrior</p><div class="char-stats"><span class="stat-pill spider-stat">AGILITY 99</span><span class="stat-pill spider-stat">WEB 100</span></div></div>
     </div>
-
-    <!-- HULK -->
+    <!-- HULK (enhanced) -->
     <div class="char-showcase reveal">
       <div class="char-model-wrap" onclick="selectHero('hulk','Hulk')">
-        <div class="char-3d" id="hulk-3d">
-          <div class="hulk-model">
-            <div class="hk-head">
-              <div class="hk-rage"></div>
-              <div class="hk-eye hk-eye-l"></div>
-              <div class="hk-eye hk-eye-r"></div>
-              <div class="hk-mouth"></div>
-            </div>
-            <div class="hk-body">
-              <div class="hk-pec hk-pec-l"></div>
-              <div class="hk-pec hk-pec-r"></div>
-            </div>
-            <div class="hk-arm hk-arm-l"><div class="hk-fist"></div></div>
-            <div class="hk-arm hk-arm-r"><div class="hk-fist"></div></div>
-            <div class="hk-leg hk-leg-l"></div>
-            <div class="hk-leg hk-leg-r"></div>
-            <div class="char-glow hulk-glow"></div>
-          </div>
-        </div>
+        <div class="char-3d"><div class="hulk-model"><div class="hk-head"><div class="hk-rage"></div><div class="hk-eye hk-eye-l"></div><div class="hk-eye hk-eye-r"></div><div class="hk-mouth"></div></div><div class="hk-body"><div class="hk-pec hk-pec-l"></div><div class="hk-pec hk-pec-r"></div></div><div class="hk-arm hk-arm-l"><div class="hk-fist"></div></div><div class="hk-arm hk-arm-r"><div class="hk-fist"></div></div><div class="hk-leg hk-leg-l"></div><div class="hk-leg hk-leg-r"></div><div class="char-glow hulk-glow"></div></div></div>
       </div>
-      <div class="char-info">
-        <div class="char-name-big" style="color:#00e060;">HULK</div>
-        <p class="char-lore">Dr. Bruce Banner — gamma-powered behemoth.<br>The madder Hulk gets, the stronger Hulk gets.</p>
-        <div class="char-stats">
-          <span class="stat-pill hulk-stat">POWER 100</span>
-          <span class="stat-pill hulk-stat">RAGE 99</span>
-          <span class="stat-pill hulk-stat">DURABILITY 100</span>
-        </div>
-      </div>
+      <div class="char-info"><div class="char-name-big" style="color:#00e060;">HULK</div><p class="char-lore">Bruce Banner — Infinite Rage</p><div class="char-stats"><span class="stat-pill hulk-stat">POWER 100</span><span class="stat-pill hulk-stat">ENDURANCE 99</span></div></div>
     </div>
-
-    <!-- IRON MAN -->
+    <!-- IRON MAN SVG enhanced -->
     <div class="char-showcase reveal">
-      <div class="char-model-wrap" onclick="selectHero('iron','Iron Man')">
-        <div class="char-3d">
-          <div class="ironman-model">
-            <svg class="ironman-svg" viewBox="0 0 260 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- legs -->
-              <rect x="80" y="210" width="42" height="120" rx="10" fill="#8b2000"/>
-              <rect x="82" y="210" width="38" height="120" rx="9" fill="#cc3300"/>
-              <rect x="138" y="210" width="42" height="120" rx="10" fill="#8b2000"/>
-              <rect x="140" y="210" width="38" height="120" rx="9" fill="#cc3300"/>
-              <!-- knee guards -->
-              <rect x="82" y="270" width="38" height="20" rx="6" fill="#ffaa00"/>
-              <rect x="140" y="270" width="38" height="20" rx="6" fill="#ffaa00"/>
-              <!-- body -->
-              <rect x="68" y="95" width="124" height="125" rx="20" fill="#8b2000"/>
-              <rect x="72" y="99" width="116" height="117" rx="17" fill="#cc3300"/>
-              <!-- chest arc reactor -->
-              <circle cx="130" cy="145" r="28" fill="#8b2000"/>
-              <circle cx="130" cy="145" r="22" fill="#003366"/>
-              <circle cx="130" cy="145" r="14" fill="#0066ff"/>
-              <circle cx="130" cy="145" r="8" fill="#66ccff"/>
-              <circle cx="130" cy="145" r="4" fill="#fff"/>
-              <circle cx="130" cy="145" r="22" stroke="#0088ff" stroke-width="2" opacity="0.8"/>
-              <!-- arc glow lines -->
-              <line x1="130" y1="123" x2="130" y2="115" stroke="#0088ff" stroke-width="2" opacity="0.6"/>
-              <line x1="130" y1="167" x2="130" y2="175" stroke="#0088ff" stroke-width="2" opacity="0.6"/>
-              <line x1="108" y1="145" x2="100" y2="145" stroke="#0088ff" stroke-width="2" opacity="0.6"/>
-              <line x1="152" y1="145" x2="160" y2="145" stroke="#0088ff" stroke-width="2" opacity="0.6"/>
-              <!-- shoulders -->
-              <ellipse cx="58" cy="108" rx="22" ry="18" fill="#cc3300"/>
-              <ellipse cx="202" cy="108" rx="22" ry="18" fill="#cc3300"/>
-              <!-- arms -->
-              <rect x="20" y="108" width="40" height="110" rx="14" fill="#8b2000"/>
-              <rect x="23" y="111" width="34" height="104" rx="12" fill="#cc3300"/>
-              <rect x="200" y="108" width="40" height="110" rx="14" fill="#8b2000"/>
-              <rect x="203" y="111" width="34" height="104" rx="12" fill="#cc3300"/>
-              <!-- repulsor hands -->
-              <circle cx="40" cy="224" r="16" fill="#8b2000"/>
-              <circle cx="40" cy="224" r="11" fill="#0066ff"/>
-              <circle cx="40" cy="224" r="6" fill="#66ccff"/>
-              <circle cx="220" cy="224" r="16" fill="#8b2000"/>
-              <circle cx="220" cy="224" r="11" fill="#0066ff"/>
-              <circle cx="220" cy="224" r="6" fill="#66ccff"/>
-              <!-- neck -->
-              <rect x="110" y="75" width="40" height="28" rx="8" fill="#8b2000"/>
-              <!-- head -->
-              <rect x="80" y="16" width="100" height="76" rx="24" fill="#8b2000"/>
-              <rect x="84" y="20" width="92" height="68" rx="20" fill="#cc3300"/>
-              <!-- faceplate -->
-              <rect x="88" y="26" width="84" height="40" rx="14" fill="#cc3300"/>
-              <!-- eyes -->
-              <polygon points="90,38 115,30 115,50 90,58" fill="#ffaa00" opacity="0.9"/>
-              <polygon points="170,38 145,30 145,50 170,58" fill="#ffaa00" opacity="0.9"/>
-              <polygon points="94,40 112,33 112,47 94,54" fill="#fff" opacity="0.8"/>
-              <polygon points="166,40 148,33 148,47 166,54" fill="#fff" opacity="0.8"/>
-              <!-- head fin -->
-              <rect x="122" y="6" width="16" height="20" rx="4" fill="#ffaa00"/>
-              <!-- bottom plate -->
-              <rect x="84" y="60" width="92" height="12" rx="4" fill="#8b2000"/>
-              <!-- glow -->
-              <ellipse cx="130" cy="330" rx="80" ry="14" fill="rgba(255,140,0,0.3)"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="char-info">
-        <div class="char-name-big" style="color:#ffaa00;">IRON MAN</div>
-        <p class="char-lore">Tony Stark — genius billionaire in a suit.<br>Arc reactor technology and AI-powered armor.</p>
-        <div class="char-stats">
-          <span class="stat-pill iron-stat">TECH 99</span>
-          <span class="stat-pill iron-stat">FLIGHT 98</span>
-          <span class="stat-pill iron-stat">FIREPOWER 97</span>
-        </div>
-      </div>
+      <div class="char-model-wrap" onclick="selectHero('iron','Iron Man')"><div class="char-3d"><div class="ironman-model"><svg class="ironman-svg" viewBox="0 0 260 340" fill="none"><rect x="80" y="210" width="42" height="120" rx="10" fill="#8b2000"/><rect x="82" y="210" width="38" height="120" rx="9" fill="#cc3300"/><rect x="138" y="210" width="42" height="120" rx="10" fill="#8b2000"/><rect x="140" y="210" width="38" height="120" rx="9" fill="#cc3300"/><rect x="82" y="270" width="38" height="20" rx="6" fill="#ffaa00"/><rect x="140" y="270" width="38" height="20" rx="6" fill="#ffaa00"/><rect x="68" y="95" width="124" height="125" rx="20" fill="#8b2000"/><rect x="72" y="99" width="116" height="117" rx="17" fill="#cc3300"/><circle cx="130" cy="145" r="28" fill="#8b2000"/><circle cx="130" cy="145" r="22" fill="#003366"/><circle cx="130" cy="145" r="14" fill="#0066ff"/><circle cx="130" cy="145" r="8" fill="#66ccff"/><circle cx="130" cy="145" r="4" fill="#fff"/><circle cx="130" cy="145" r="22" stroke="#0088ff" stroke-width="2" opacity="0.8"/><ellipse cx="58" cy="108" rx="22" ry="18" fill="#cc3300"/><ellipse cx="202" cy="108" rx="22" ry="18" fill="#cc3300"/><rect x="20" y="108" width="40" height="110" rx="14" fill="#8b2000"/><rect x="23" y="111" width="34" height="104" rx="12" fill="#cc3300"/><rect x="200" y="108" width="40" height="110" rx="14" fill="#8b2000"/><rect x="203" y="111" width="34" height="104" rx="12" fill="#cc3300"/><circle cx="40" cy="224" r="16" fill="#8b2000"/><circle cx="40" cy="224" r="11" fill="#0066ff"/><circle cx="220" cy="224" r="16" fill="#8b2000"/><circle cx="220" cy="224" r="11" fill="#0066ff"/><rect x="80" y="16" width="100" height="76" rx="24" fill="#8b2000"/><rect x="84" y="20" width="92" height="68" rx="20" fill="#cc3300"/><polygon points="90,38 115,30 115,50 90,58" fill="#ffaa00"/><polygon points="170,38 145,30 145,50 170,58" fill="#ffaa00"/></svg></div></div></div>
+      <div class="char-info"><div class="char-name-big" style="color:#ffaa00;">IRON MAN</div><p class="char-lore">Tony Stark — Mk.85 Nanotech</p><div class="char-stats"><span class="stat-pill iron-stat">TECH 100</span><span class="stat-pill iron-stat">FLIGHT 99</span></div></div>
     </div>
-
-    <!-- THOR -->
+    <!-- THOR SVG enhanced -->
     <div class="char-showcase reveal">
-      <div class="char-model-wrap" onclick="selectHero('thor','Thor')">
-        <div class="char-3d">
-          <div class="thor-model">
-            <svg class="thor-svg" viewBox="0 0 260 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- cape -->
-              <path d="M60 90 Q30 180 40 330 Q80 290 130 295 Q180 290 220 330 Q230 180 200 90 Z" fill="#cc0000" opacity="0.85"/>
-              <!-- legs -->
-              <rect x="82" y="215" width="38" height="115" rx="10" fill="#1a1a4d"/>
-              <rect x="84" y="215" width="34" height="113" rx="9" fill="#2d2d7a"/>
-              <rect x="140" y="215" width="38" height="115" rx="10" fill="#1a1a4d"/>
-              <rect x="142" y="215" width="34" height="113" rx="9" fill="#2d2d7a"/>
-              <!-- boots -->
-              <rect x="80" y="295" width="40" height="35" rx="8" fill="#c0a000"/>
-              <rect x="82" y="297" width="36" height="31" rx="7" fill="#ffd700"/>
-              <rect x="140" y="295" width="40" height="35" rx="8" fill="#c0a000"/>
-              <rect x="142" y="297" width="36" height="31" rx="7" fill="#ffd700"/>
-              <!-- body -->
-              <rect x="65" y="95" width="130" height="128" rx="20" fill="#1a1a4d"/>
-              <rect x="69" y="99" width="122" height="120" rx="17" fill="#2d2d7a"/>
-              <!-- chest armor circles -->
-              <circle cx="130" cy="148" r="32" fill="#1a1a4d"/>
-              <circle cx="130" cy="148" r="26" fill="#3d3daa"/>
-              <!-- chest disc -->
-              <circle cx="130" cy="148" r="16" fill="#ffd700"/>
-              <circle cx="130" cy="148" r="10" fill="#ffaa00"/>
-              <circle cx="130" cy="148" r="5" fill="#fff" opacity="0.9"/>
-              <!-- armor lines -->
-              <rect x="100" y="175" width="60" height="6" rx="3" fill="#ffd700" opacity="0.5"/>
-              <rect x="105" y="185" width="50" height="5" rx="2" fill="#ffd700" opacity="0.4"/>
-              <!-- shoulders - gold spaulder -->
-              <ellipse cx="55" cy="110" rx="28" ry="20" fill="#ffd700"/>
-              <ellipse cx="57" cy="109" rx="23" ry="16" fill="#ffaa00"/>
-              <ellipse cx="205" cy="110" rx="28" ry="20" fill="#ffd700"/>
-              <ellipse cx="203" cy="109" rx="23" ry="16" fill="#ffaa00"/>
-              <!-- arms -->
-              <rect x="16" y="108" width="42" height="112" rx="14" fill="#1a1a4d"/>
-              <rect x="19" y="111" width="36" height="106" rx="12" fill="#2d2d7a"/>
-              <rect x="202" y="108" width="42" height="112" rx="14" fill="#1a1a4d"/>
-              <rect x="205" y="111" width="36" height="106" rx="12" fill="#2d2d7a"/>
-              <!-- gauntlets -->
-              <rect x="14" y="195" width="46" height="30" rx="10" fill="#ffd700"/>
-              <rect x="17" y="197" width="40" height="26" rx="8" fill="#ffaa00"/>
-              <rect x="200" y="195" width="46" height="30" rx="10" fill="#ffd700"/>
-              <rect x="203" y="197" width="40" height="26" rx="8" fill="#ffaa00"/>
-              <!-- fists -->
-              <rect x="16" y="222" width="44" height="28" rx="8" fill="#c0a000"/>
-              <rect x="200" y="222" width="44" height="28" rx="8" fill="#c0a000"/>
-              <!-- MJOLNIR in right hand -->
-              <rect x="198" y="240" width="48" height="36" rx="6" fill="#555"/>
-              <rect x="200" y="242" width="44" height="32" rx="5" fill="#777"/>
-              <rect x="220" y="276" width="8" height="36" rx="3" fill="#555"/>
-              <rect x="222" y="278" width="4" height="32" rx="2" fill="#888"/>
-              <!-- lightning from mjolnir -->
-              <path d="M244 244 L230 260 L238 260 L220 285" stroke="#66aaff" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
-              <path d="M244 244 L230 260 L238 260 L220 285" stroke="#fff" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.5"/>
-              <!-- neck -->
-              <rect x="112" y="76" width="36" height="26" rx="8" fill="#1a1a4d"/>
-              <!-- head -->
-              <rect x="78" y="14" width="104" height="72" rx="22" fill="#d4a060"/>
-              <rect x="82" y="18" width="96" height="64" rx="18" fill="#e8b878"/>
-              <!-- HELMET -->
-              <path d="M78 38 Q78 14 130 14 Q182 14 182 38 L182 22 Q160 4 130 4 Q100 4 78 22 Z" fill="#ffd700"/>
-              <rect x="78" y="18" width="104" height="26" rx="12" fill="#ffd700"/>
-              <!-- helmet wings -->
-              <path d="M78 28 Q55 20 50 38 Q55 50 78 46 Z" fill="#ffd700"/>
-              <path d="M182 28 Q205 20 210 38 Q205 50 182 46 Z" fill="#ffd700"/>
-              <!-- face -->
-              <rect x="96" y="40" width="28" height="14" rx="5" fill="#888870"/>
-              <rect x="136" y="40" width="28" height="14" rx="5" fill="#888870"/>
-              <!-- eyes glow -->
-              <rect x="98" y="42" width="24" height="10" rx="4" fill="#66aaff" opacity="0.9"/>
-              <rect x="138" y="42" width="24" height="10" rx="4" fill="#66aaff" opacity="0.9"/>
-              <!-- beard -->
-              <path d="M105 62 Q130 74 155 62 Q148 72 130 76 Q112 72 105 62Z" fill="#8b6914"/>
-              <!-- glow under feet -->
-              <ellipse cx="130" cy="335" rx="80" ry="12" fill="rgba(30,100,255,0.3)"/>
-              <!-- lightning bolts background -->
-              <path d="M20 60 L35 40 L28 40 L43 20" stroke="#3366ff" stroke-width="1.5" fill="none" opacity="0.3"/>
-              <path d="M230 80 L215 55 L222 55 L207 30" stroke="#3366ff" stroke-width="1.5" fill="none" opacity="0.3"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="char-info">
-        <div class="char-name-big" style="color:#5090ff;">THOR</div>
-        <p class="char-lore">Odinson — God of Thunder, Prince of Asgard.<br>Worthy wielder of Mjolnir, master of storms.</p>
-        <div class="char-stats">
-          <span class="stat-pill thor-stat">DIVINE 97</span>
-          <span class="stat-pill thor-stat">THUNDER 100</span>
-          <span class="stat-pill thor-stat">MJOLNIR 99</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ===== SECTION 3: LOGIN ===== -->
-<section id="login">
-  <div class="login-wrapper">
-    <div class="login-left reveal">
-      <div class="section-tag">HERO PORTAL</div>
-      <div class="big-quote">
-        WITH GREAT POWER<br>COMES GREAT<br><span>RESPONSIBILITY.</span>
-      </div>
-      <p style="color:#555;font-size:15px;line-height:1.6;margin-top:12px;">
-        Join millions of Avengers fans. Battle in real-time arenas, unlock hero skins, and climb the leaderboard.
-      </p>
-      <ul class="feature-list mt-16">
-        <li>Play as Spider-Man, Hulk, Iron Man &amp; Thor</li>
-        <li>Real-time PvP arena battles</li>
-        <li>Unlock exclusive hero skins &amp; weapons</li>
-        <li>Daily missions and Avengers events</li>
-        <li>Global leaderboard — 50M+ players</li>
-      </ul>
-    </div>
-
-    <div class="auth-box reveal">
-      <div class="auth-tabs">
-        <button class="tab-btn active" onclick="switchTab('login',this)">LOGIN</button>
-        <button class="tab-btn" onclick="switchTab('register',this)">REGISTER</button>
-      </div>
-
-      <!-- LOGIN FORM -->
-      <div id="login-section" class="form-section visible">
-        <div class="auth-heading">WELCOME BACK</div>
-        <div class="auth-sub">Sign in to your hero account</div>
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" id="l-email" placeholder="hero@xtreame.com">
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input type="password" id="l-pass" placeholder="••••••••••">
-        </div>
-        <div class="forgot"><a href="#">Forgot password?</a></div>
-        <button class="submit-btn" onclick="handleLogin()">ENTER THE ARENA</button>
-        <div class="divider">or continue with</div>
-        <div class="social-btns">
-          <button class="social-btn">🌐 Google</button>
-          <button class="social-btn">🎮 Discord</button>
-          <button class="social-btn">💻 GitHub</button>
-        </div>
-      </div>
-
-      <!-- REGISTER FORM -->
-      <div id="register-section" class="form-section">
-        <div class="auth-heading">JOIN THE TEAM</div>
-        <div class="auth-sub">Create your Avengers account</div>
-        <div class="field-row">
-          <div class="field">
-            <label>First Name</label>
-            <input type="text" placeholder="Tony">
-          </div>
-          <div class="field">
-            <label>Last Name</label>
-            <input type="text" placeholder="Stark">
-          </div>
-        </div>
-        <div class="field">
-          <label>Gamer Tag</label>
-          <input type="text" placeholder="@IronHero2099">
-        </div>
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" placeholder="hero@xtreame.com">
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <input type="password" placeholder="Min 8 characters">
-        </div>
-        <div class="agree-check">
-          <input type="checkbox" id="terms">
-          <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
-        </div>
-        <button class="submit-btn" onclick="handleRegister()">ASSEMBLE NOW</button>
-        <div class="divider">or continue with</div>
-        <div class="social-btns">
-          <button class="social-btn">🌐 Google</button>
-          <button class="social-btn">🎮 Discord</button>
-        </div>
-      </div>
+      <div class="char-model-wrap" onclick="selectHero('thor','Thor')"><div class="char-3d"><div class="thor-model"><svg class="thor-svg" viewBox="0 0 260 340"><path d="M60 90 Q30 180 40 330 Q80 290 130 295 Q180 290 220 330 Q230 180 200 90 Z" fill="#cc0000" opacity="0.8"/><rect x="82" y="215" width="38" height="115" rx="10" fill="#1a1a4d"/><rect x="84" y="215" width="34" height="113" rx="9" fill="#2d2d7a"/><rect x="140" y="215" width="38" height="115" rx="10" fill="#1a1a4d"/><rect x="142" y="215" width="34" height="113" rx="9" fill="#2d2d7a"/><rect x="65" y="95" width="130" height="128" rx="20" fill="#1a1a4d"/><rect x="69" y="99" width="122" height="120" rx="17" fill="#2d2d7a"/><circle cx="130" cy="148" r="32" fill="#1a1a4d"/><circle cx="130" cy="148" r="26" fill="#3d3daa"/><circle cx="130" cy="148" r="16" fill="#ffd700"/><ellipse cx="55" cy="110" rx="28" ry="20" fill="#ffd700"/><ellipse cx="205" cy="110" rx="28" ry="20" fill="#ffd700"/><rect x="16" y="108" width="42" height="112" rx="14" fill="#1a1a4d"/><rect x="19" y="111" width="36" height="106" rx="12" fill="#2d2d7a"/><rect x="202" y="108" width="42" height="112" rx="14" fill="#1a1a4d"/><rect x="205" y="111" width="36" height="106" rx="12" fill="#2d2d7a"/><rect x="78" y="14" width="104" height="72" rx="22" fill="#d4a060"/><path d="M78 28 Q55 20 50 38 Q55 50 78 46 Z" fill="#ffd700"/><path d="M182 28 Q205 20 210 38 Q205 50 182 46 Z" fill="#ffd700"/><path d="M244 244 L230 260 L238 260 L220 285" stroke="#66aaff" stroke-width="2.5" opacity="0.9"/></svg></div></div></div>
+      <div class="char-info"><div class="char-name-big" style="color:#88aaff;">THOR</div><p class="char-lore">God of Thunder, Mjolnir's Wrath</p><div class="char-stats"><span class="stat-pill thor-stat">LIGHTNING 100</span><span class="stat-pill thor-stat">DIVINE 98</span></div></div>
     </div>
   </div>
 </section>
 
-<!-- ===== SECTION 4: ARENA / LEADERBOARD ===== -->
-<section id="arena">
-  <div class="section-tag reveal">GLOBAL RANKINGS</div>
-  <h2 class="section-title reveal">THE <span>ARENA</span></h2>
-  <p style="color:#555;font-size:15px;margin-top:-8px;margin-bottom:16px;" class="reveal">Top heroes this week</p>
+<!-- LOGIN (dynamic) -->
+<section id="login"><div class="login-wrapper"><div class="login-left reveal"><div class="section-tag">HERO ACCESS</div><div class="big-quote">WITH GREAT POWER<br>COMES GREAT<br><span>RESPONSIBILITY.</span></div><ul class="feature-list"><li>⚡ Cross-platform PvP Arena</li><li>🎭 Exclusive Hero Evolutions</li><li>🏆 Weekly Infinity Tournaments</li></ul></div><div class="auth-box reveal"><div class="auth-tabs"><button class="tab-btn active" onclick="switchTab('login',this)">LOGIN</button><button class="tab-btn" onclick="switchTab('register',this)">REGISTER</button></div><div id="login-section" class="form-section visible"><div class="auth-heading">WELCOME BACK</div><div class="field"><label>AGENT ID / EMAIL</label><input id="l-email" type="email" placeholder="hero@xtreame.com"></div><div class="field"><label>ACCESS CODE</label><input id="l-pass" type="password" placeholder="••••••"></div><button class="submit-btn" onclick="handleLogin()">ENTER BATTLEFIELD</button><div class="social-btns"><button class="social-btn">🌐 Google</button><button class="social-btn">🎮 Discord</button></div></div><div id="register-section" class="form-section"><div class="auth-heading">ASSEMBLE NEW</div><div class="field-row"><div class="field"><input type="text" placeholder="First"></div><div class="field"><input type="text" placeholder="Last"></div></div><div class="field"><input type="text" placeholder="GamerTag"></div><div class="field"><input type="email" placeholder="Email"></div><div class="field"><input type="password" placeholder="Password"></div><div class="agree-check"><input type="checkbox" id="terms"><span>Agree to <a href="#">Avengers Protocol</a></span></div><button class="submit-btn" onclick="handleRegister()">ACTIVATE HERO</button></div></div></div></section>
 
-  <div class="leaderboard">
-    <div class="lb-row reveal" style="border-color:rgba(255,215,0,.3);">
-      <div class="lb-rank gold">#1</div>
-      <div class="lb-avatar" style="background:rgba(220,0,0,.2);">🕷️</div>
-      <div class="lb-info">
-        <div class="lb-name">WebCrawler_99</div>
-        <div class="lb-hero">Playing as Spider-Man</div>
-      </div>
-      <div class="lb-score">9,847,220</div>
-      <div class="lb-bar-wrap"><div class="lb-bar" style="width:98%"></div></div>
-    </div>
-    <div class="lb-row reveal" style="border-color:rgba(192,192,192,.2);">
-      <div class="lb-rank silver">#2</div>
-      <div class="lb-avatar" style="background:rgba(0,200,80,.2);">💚</div>
-      <div class="lb-info">
-        <div class="lb-name">GammaSmash</div>
-        <div class="lb-hero">Playing as Hulk</div>
-      </div>
-      <div class="lb-score">8,312,100</div>
-      <div class="lb-bar-wrap"><div class="lb-bar" style="width:83%"></div></div>
-    </div>
-    <div class="lb-row reveal" style="border-color:rgba(205,127,50,.2);">
-      <div class="lb-rank bronze">#3</div>
-      <div class="lb-avatar" style="background:rgba(255,140,0,.2);">🔥</div>
-      <div class="lb-info">
-        <div class="lb-name">TonyStarkFan</div>
-        <div class="lb-hero">Playing as Iron Man</div>
-      </div>
-      <div class="lb-score">7,654,880</div>
-      <div class="lb-bar-wrap"><div class="lb-bar" style="width:77%"></div></div>
-    </div>
-    <div class="lb-row reveal">
-      <div class="lb-rank other">#4</div>
-      <div class="lb-avatar" style="background:rgba(30,100,255,.2);">⚡</div>
-      <div class="lb-info">
-        <div class="lb-name">ThunderGod_X</div>
-        <div class="lb-hero">Playing as Thor</div>
-      </div>
-      <div class="lb-score">6,999,450</div>
-      <div class="lb-bar-wrap"><div class="lb-bar" style="width:70%"></div></div>
-    </div>
-    <div class="lb-row reveal">
-      <div class="lb-rank other">#5</div>
-      <div class="lb-avatar" style="background:rgba(220,0,0,.2);">🕷️</div>
-      <div class="lb-info">
-        <div class="lb-name">NightSpider</div>
-        <div class="lb-hero">Playing as Spider-Man</div>
-      </div>
-      <div class="lb-score">6,441,200</div>
-      <div class="lb-bar-wrap"><div class="lb-bar" style="width:64%"></div></div>
-    </div>
-  </div>
-</section>
+<!-- ARENA/LEADERBOARD -->
+<section id="arena"><div class="section-tag reveal">ARENA RANKINGS</div><h2 class="section-title reveal">GLOBAL <span>ELITE</span></h2><div class="leaderboard"><div class="lb-row reveal"><div class="lb-rank gold">#1</div><div class="lb-avatar">🕷️</div><div class="lb-info"><div class="lb-name">WebSlinger</div><div class="lb-hero">Spider-Man</div></div><div class="lb-score">12.4M</div><div class="lb-bar-wrap"><div class="lb-bar" style="width:0%"></div></div></div><div class="lb-row reveal"><div class="lb-rank silver">#2</div><div class="lb-avatar">💚</div><div class="lb-info"><div class="lb-name">GammaRage</div><div class="lb-hero">Hulk</div></div><div class="lb-score">11.2M</div><div class="lb-bar-wrap"><div class="lb-bar" style="width:0%"></div></div></div><div class="lb-row reveal"><div class="lb-rank bronze">#3</div><div class="lb-avatar">🔥</div><div class="lb-info"><div class="lb-name">IronLegacy</div><div class="lb-hero">Iron Man</div></div><div class="lb-score">10.1M</div><div class="lb-bar-wrap"><div class="lb-bar" style="width:0%"></div></div></div><div class="lb-row reveal"><div class="lb-rank other">#4</div><div class="lb-avatar">⚡</div><div class="lb-info"><div class="lb-name">ThunderStrike</div><div class="lb-hero">Thor</div></div><div class="lb-score">9.3M</div><div class="lb-bar-wrap"><div class="lb-bar" style="width:0%"></div></div></div></div></section>
 
-<!-- ===== SECTION 5: CONTACT ===== -->
-<section id="contact" style="min-height:60vh;">
-  <div class="section-tag reveal">GET IN TOUCH</div>
-  <h2 class="section-title reveal">CONTACT <span>MISSION CONTROL</span></h2>
-  <div style="display:flex;gap:60px;margin-top:40px;flex-wrap:wrap;">
-    <div class="reveal" style="flex:1;min-width:280px;">
-      <div class="field">
-        <label>Your Name</label>
-        <input type="text" placeholder="Peter Parker">
-      </div>
-      <div class="field">
-        <label>Email Address</label>
-        <input type="email" placeholder="hero@xtreame.com">
-      </div>
-      <div class="field">
-        <label>Message</label>
-        <textarea style="width:100%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:15px;padding:12px 14px;outline:none;resize:vertical;min-height:100px;transition:all .25s;" placeholder="I need your help, Avengers..." onfocus="this.style.borderColor='#ff2020'" onblur="this.style.borderColor='rgba(255,255,255,.08)'"></textarea>
-      </div>
-      <button class="submit-btn" style="width:auto;padding:13px 36px;" onclick="handleContact(this)">SEND MESSAGE</button>
-    </div>
-    <div class="reveal" style="display:flex;flex-direction:column;gap:16px;margin-top:8px;">
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;">
-        <span style="font-size:24px;">📍</span>
-        <div>
-          <div style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:2px;color:#ff2020;margin-bottom:4px;">LOCATION</div>
-          <div style="font-size:14px;color:#888;">Avengers Tower, New York City</div>
-        </div>
-      </div>
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;">
-        <span style="font-size:24px;">📧</span>
-        <div>
-          <div style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:2px;color:#ff2020;margin-bottom:4px;">EMAIL</div>
-          <div style="font-size:14px;color:#888;">assemble@xtreame.com</div>
-        </div>
-      </div>
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;">
-        <span style="font-size:24px;">🎮</span>
-        <div>
-          <div style="font-family:'Orbitron',monospace;font-size:11px;letter-spacing:2px;color:#ff2020;margin-bottom:4px;">DISCORD</div>
-          <div style="font-size:14px;color:#888;">discord.gg/xtreame</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<section id="contact" style="min-height:60vh;"><div class="section-tag reveal">CALL SIGNS</div><h2 class="section-title reveal">CONTACT <span>HEADQUARTERS</span></h2><div style="display:flex;gap:40px;margin-top:30px;"><div style="flex:1"><div class="field"><input type="text" placeholder="Your Name"></div><div class="field"><input type="email" placeholder="Email"></div><div class="field"><textarea placeholder="Message to Avengers..." style="width:100%;background:#0a0a12;border:1px solid #ff2020;border-radius:16px;padding:12px;color:white;"></textarea></div><button class="submit-btn" onclick="handleContact(this)">TRANSMIT</button></div><div><div style="background:#0a0a12;border-radius:20px;padding:20px;"><span>📍 Avengers Tower, NYC</span><br><span>📧 assemble@xtreame.com</span></div></div></div></section>
 
-<!-- ===== FOOTER ===== -->
-<footer>
-  <div class="foot-logo">XTREAME</div>
-  <div class="foot-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Support</a>
-    <a href="#">Careers</a>
-  </div>
-  <div class="foot-copy">© 2026 XTREAME. All rights reserved.</div>
-</footer>
+<footer><div class="foot-logo">◢ XTREAME ◣</div><div class="foot-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a></div><div class="foot-copy">© 2026 — Infinity Gaming</div></footer>
 
 <script>
-/* ===== CURSOR ===== */
-const cur = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX; my=e.clientY;
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-});
-function animRing(){
-  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(animRing);
-}
-animRing();
-document.querySelectorAll('button,a,.char-model-wrap,.lb-row').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{
-    cur.style.width='8px'; cur.style.height='8px';
-    ring.style.width='52px'; ring.style.height='52px';
-    ring.style.borderColor='rgba(255,32,32,0.9)';
-  });
-  el.addEventListener('mouseleave',()=>{
-    cur.style.width='16px'; cur.style.height='16px';
-    ring.style.width='36px'; ring.style.height='36px';
-    ring.style.borderColor='rgba(255,32,32,0.5)';
-  });
-});
-
-/* ===== SCROLL: NAVBAR ===== */
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
-  updateActiveNav();
-});
-
-function updateActiveNav(){
-  const sections=['home','characters','login','arena','contact'];
-  const btns = document.querySelectorAll('.nav-btn');
-  let current='home';
-  sections.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el && window.scrollY >= el.offsetTop - 120) current=id;
-  });
-  btns.forEach((b,i)=>b.classList.toggle('active', i===sections.indexOf(current)));
-}
-
-function scrollTo(id){
-  document.querySelector(id).scrollIntoView({behavior:'smooth'});
-}
-
-/* ===== SCROLL: REVEAL ANIMATIONS ===== */
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-    }
-  });
-},{threshold:0.12});
-document.querySelectorAll('.reveal,.char-showcase,.lb-row,.section-tag,.section-title').forEach(el=>observer.observe(el));
-
-/* ===== 3D TILT on character models ===== */
-document.querySelectorAll('.char-model-wrap').forEach(wrap=>{
-  wrap.addEventListener('mousemove',e=>{
-    const r = wrap.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    const inner = wrap.querySelector('.char-3d');
-    if(inner) inner.style.transform=`rotateY(${x*30}deg) rotateX(${-y*20}deg) scale(1.06)`;
-  });
-  wrap.addEventListener('mouseleave',e=>{
-    const inner = wrap.querySelector('.char-3d');
-    if(inner) inner.style.transform='rotateY(0) rotateX(0) scale(1)';
-  });
-});
-
-/* ===== HERO SELECT ===== */
-let selected = null;
-function selectHero(id, name){
-  document.querySelectorAll('.char-model-wrap').forEach(w=>{
-    w.style.outline='none';w.style.boxShadow='none';
-  });
-  const colors={spider:'#ff2020',hulk:'#00e060',iron:'#ffaa00',thor:'#5090ff'};
-  const card = event.currentTarget;
-  card.style.outline=`2px solid ${colors[id]}`;
-  card.style.boxShadow=`0 0 30px ${colors[id]}55`;
-  selected = name;
-
-  // flash message
-  let msg = document.createElement('div');
-  msg.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);border:1px solid #ff2020;border-radius:8px;padding:12px 28px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:2px;color:#ff2020;z-index:1000;animation:fadeUp .3s ease;';
-  msg.textContent = `▶ ${name.toUpperCase()} SELECTED`;
-  document.body.appendChild(msg);
-  setTimeout(()=>msg.remove(), 2200);
-}
-
-/* ===== AUTH TABS ===== */
-function switchTab(tab, btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('login-section').classList.toggle('visible', tab==='login');
-  document.getElementById('register-section').classList.toggle('visible', tab==='register');
-}
-
-/* ===== LOGIN ===== */
-function handleLogin(){
-  const btn = document.querySelector('#login-section .submit-btn');
-  const email = document.getElementById('l-email').value.trim();
-  if(!email){ shakefield('l-email'); return; }
-  btn.textContent='AUTHENTICATING...';
-  btn.style.background='linear-gradient(135deg,#444,#666)';
-  setTimeout(()=>{
-    btn.textContent='✓ ACCESS GRANTED';
-    btn.style.background='linear-gradient(135deg,#004d20,#00c850)';
-    btn.style.boxShadow='0 8px 24px rgba(0,200,80,.5)';
-    setTimeout(()=>{
-      btn.textContent='ENTER THE ARENA';
-      btn.style.background='linear-gradient(135deg,#cc0000,#ff3300)';
-      btn.style.boxShadow='none';
-    },2500);
-  },1500);
-}
-
-/* ===== REGISTER ===== */
-function handleRegister(){
-  const btn = document.querySelector('#register-section .submit-btn');
-  const terms = document.getElementById('terms').checked;
-  if(!terms){ alert('Please agree to the Terms of Service.'); return; }
-  btn.textContent='ASSEMBLING HERO...';
-  btn.style.background='linear-gradient(135deg,#444,#666)';
-  setTimeout(()=>{
-    btn.textContent='✓ HERO CREATED!';
-    btn.style.background='linear-gradient(135deg,#004d20,#00c850)';
-    btn.style.boxShadow='0 8px 24px rgba(0,200,80,.5)';
-  },1800);
-}
-
-/* ===== CONTACT ===== */
-function handleContact(btn){
-  btn.textContent='SENDING...';
-  setTimeout(()=>{
-    btn.textContent='✓ MESSAGE SENT!';
-    btn.style.background='linear-gradient(135deg,#004d20,#00c850)';
-    setTimeout(()=>{
-      btn.textContent='SEND MESSAGE';
-      btn.style.background='linear-gradient(135deg,#cc0000,#ff3300)';
-    },2500);
-  },1200);
-}
-
-function shakefield(id){
-  const el=document.getElementById(id);
-  el.style.animation='none';
-  el.style.borderColor='#ff2020';
-  el.style.boxShadow='0 0 0 3px rgba(220,0,0,.3)';
-  setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},2000);
-}
-
-/* ===== PARALLAX BG ===== */
-window.addEventListener('scroll',()=>{
-  const y = window.scrollY;
-  document.querySelector('.grid-bg').style.transform=`translateY(${y*.3}px)`;
-});
+  // Cursor animation enhanced
+  const cur = document.getElementById('cursor'), ring = document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); } animRing();
+  document.querySelectorAll('button,a,.char-model-wrap').forEach(el=>{ el.addEventListener('mouseenter',()=>{ cur.style.width='8px'; cur.style.height='8px'; ring.style.width='56px'; ring.style.height='56px'; ring.style.borderColor='#ff3030'; }); el.addEventListener('mouseleave',()=>{ cur.style.width='12px'; cur.style.height='12px'; ring.style.width='42px'; ring.style.height='42px'; ring.style.borderColor='rgba(255,48,48,0.7)'; }); });
+  
+  // scroll effects and reveal
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', window.scrollY>60); updateActive(); });
+  function updateActive(){ const ids=['home','characters','login','arena','contact']; let cur='home'; ids.forEach(id=>{ if(document.getElementById(id) && window.scrollY >= document.getElementById(id).offsetTop-150) cur=id; }); document.querySelectorAll('.nav-btn').forEach((btn,i)=> btn.classList.toggle('active', i===ids.indexOf(cur))); }
+  function scrollTo(sel){ document.querySelector(sel).scrollIntoView({behavior:'smooth'}); }
+  const observer = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:0.1});
+  document.querySelectorAll('.reveal,.char-showcase,.lb-row,.section-tag,.section-title').forEach(el=>observer.observe(el));
+  
+  // hero selection + fx
+  function selectHero(id, name){
+    document.querySelectorAll('.char-model-wrap').forEach(w=>{ w.style.outline='none'; w.style.boxShadow='none'; });
+    const colors={spider:'#ff2020',hulk:'#00e060',iron:'#ffaa00',thor:'#5090ff'};
+    event.currentTarget.style.outline=`3px solid ${colors[id]}`;
+    event.currentTarget.style.boxShadow=`0 0 35px ${colors[id]}`;
+    let msg=document.createElement('div'); msg.style.cssText='position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#000000dd;border:2px solid #ff2020;border-radius:30px;padding:12px 30px;font-family:Orbitron;font-weight:bold;color:#ff2020;z-index:2000;backdrop-filter:blur(8px);'; msg.innerText=`⚡ ${name.toUpperCase()} SELECTED ⚡`; document.body.appendChild(msg); setTimeout(()=>msg.remove(),2000);
+  }
+  function switchTab(tab,btn){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.getElementById('login-section').classList.toggle('visible',tab==='login'); document.getElementById('register-section').classList.toggle('visible',tab==='register'); }
+  function handleLogin(){ let btn=document.querySelector('#login-section .submit-btn'), email=document.getElementById('l-email').value; if(!email){ alert('Enter Agent ID'); return; } btn.textContent='AUTHENTICATING...'; btn.style.opacity='0.7'; setTimeout(()=>{ btn.textContent='✓ ACCESS GRANTED'; btn.style.background='#0f0'; setTimeout(()=>{ btn.textContent='ENTER BATTLEFIELD'; btn.style.background='linear-gradient(135deg,#cc0000,#ff4400)'; },2000); },1400); }
+  function handleRegister(){ let btn=document.querySelector('#register-section .submit-btn'), terms=document.getElementById('terms'); if(!terms.checked){ alert('Accept protocols'); return; } btn.textContent='ACTIVATING...'; setTimeout(()=>{ btn.textContent='✓ HERO ACTIVE!'; btn.style.background='#0f0'; setTimeout(()=>{ btn.textContent='ACTIVATE HERO'; btn.style.background='linear-gradient(135deg,#cc0000,#ff4400)'; },1800); },1200); }
+  function handleContact(btn){ btn.textContent='SENDING...'; setTimeout(()=>{ btn.textContent='✓ TRANSMITTED!'; setTimeout(()=>btn.textContent='TRANSMIT',1800); },1000); }
+  
+  // 3d tilt models
+  document.querySelectorAll('.char-model-wrap').forEach(wrap=>{ wrap.addEventListener('mousemove',e=>{ let rect=wrap.getBoundingClientRect(); let x=(e.clientX-rect.left)/rect.width-0.5, y=(e.clientY-rect.top)/rect.height-0.5; let inner=wrap.querySelector('.char-3d'); if(inner) inner.style.transform=`rotateY(${x*28}deg) rotateX(${-y*18}deg) scale(1.05)`; }); wrap.addEventListener('mouseleave',e=>{ let inner=wrap.querySelector('.char-3d'); if(inner) inner.style.transform='rotateY(0) rotateX(0) scale(1)'; }); });
+  
+  // Leaderboard bar animation on view
+  const lbBars = document.querySelectorAll('.lb-bar');
+  const lbObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{ if(entry.isIntersecting){ let bar = entry.target; let w = bar.style.width; if(bar.parentElement.previousElementSibling){ let scoreSpan = bar.parentElement.parentElement.querySelector('.lb-score'); let val = scoreSpan.innerText.replace('M','').trim(); let perc = parseFloat(val)/13.0 * 100; bar.style.width = Math.min(perc, 100)+'%'; }else{ bar.style.width = '98%'; } } });
+  }, {threshold:0.3});
+  lbBars.forEach(bar=>lbObserver.observe(bar));
+  
+  // Particle canvas background (cinematic dust)
+  const canvas = document.getElementById('particle-canvas'), ctx = canvas.getContext('2d');
+  function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  window.addEventListener('resize',resizeCanvas); resizeCanvas();
+  let particles = Array(140).fill().map(()=>({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, alpha:Math.random()*0.5, vx:(Math.random()-0.5)*0.2, vy:(Math.random()-0.5)*0.1 }));
+  function drawParticles(){ if(!ctx)return; ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#ff2020'; for(let p of particles){ ctx.globalAlpha=p.alpha*0.6; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0; if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0; } requestAnimationFrame(drawParticles); }
+  drawParticles();
 </script>
+<style>
+  .big-quote{font-family:'Orbitron',monospace;font-size:clamp(28px,4vw,46px);font-weight:900;line-height:1.2;margin-bottom:20px;color:#fff;}
+  .feature-list{list-style:none;margin-top:20px;}
+  .feature-list li{margin-bottom:12px;color:#aaa;display:flex;gap:10px;align-items:center;}
+  .auth-tabs{display:flex;gap:12px;margin-bottom:24px;}
+  .tab-btn{flex:1;padding:12px;background:#222;border:none;color:#aaa;border-radius:60px;cursor:pointer;transition:0.2s;font-weight:bold;}
+  .tab-btn.active{background:#ff2020;color:#000;}
+  .field{margin-bottom:20px;}
+  .field label{display:block;margin-bottom:6px;font-size:10px;letter-spacing:2px;color:#ff8888;}
+  .field input, .field textarea{width:100%;background:#0a0a12;border:1px solid #ff202033;border-radius:14px;padding:12px 16px;color:white;transition:0.2s;}
+  .field input:focus{border-color:#ff2020;outline:none;}
+  .submit-btn{background:linear-gradient(135deg,#cc0000,#ff4400);border:none;border-radius:40px;padding:14px;color:white;font-weight:bold;width:100%;cursor:pointer;transition:0.3s;}
+  .social-btns{display:flex;gap:12px;margin-top:16px;}
+  .social-btn{flex:1;background:#1e1e2a;border:none;border-radius:40px;padding:10px;color:#ccc;cursor:pointer;}
+  .char-glow{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:180px;height:35px;border-radius:50%;}
+  .spider-glow{background:radial-gradient(ellipse,#ff000088,transparent);}
+  .hulk-glow{background:radial-gradient(ellipse,#00ff8888,transparent);}
+  .iron-glow{background:radial-gradient(ellipse,#ffaa3388,transparent);}
+  .thor-glow{background:radial-gradient(ellipse,#4488ff88,transparent);}
+  .scroll-ind{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0.7;}
+  .scroll-line{width:1px;height:45px;background:#ff2020;animation:scrollPulse 1.8s infinite;}
+  @keyframes scrollPulse{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(0.5);opacity:0.3}}
+  .form-section{display:none;}
+  .form-section.visible{display:block;}
+  .agree-check{display:flex;gap:10px;align-items:center;margin-bottom:18px;}
+</style>
 </body>
 </html>
